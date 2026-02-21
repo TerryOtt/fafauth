@@ -1,7 +1,8 @@
 import json
 
 
-def custom_authorizer(event, context):
+def hello(event, context):
+
     body = {
         "message": "Go Serverless v4.0! Your function executed successfully!",
     }

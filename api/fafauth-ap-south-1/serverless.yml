@@ -8,9 +8,29 @@ app: fafauth-api
 service: fafauth-ap-south-1
 
 provider:
-    name: aws
-    runtime: python3.14
+  name: aws
+  region: ap-south-1
+  runtime: python3.14
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - lambda:InvokeFunction
+          Resource: "*"
 
 functions:
-    apiCustomAuthorizer:
-        handler: handler.custom_authorizer
+  apiCustomAuthorizer:
+      handler: authorizer.custom_authorizer
+
+  ping:
+    handler: handler.hello
+    events:
+      - http:
+          path: /api/v001/ping
+          method: get
+          authorizer:
+            name: apiCustomAuthorizer
+            type: TOKEN
+            identitySource: method.request.header.Authorization # Specifies where to find the token
+            authorizerResultTtlInSeconds: 300 # Caches the policy for 5 minutes
