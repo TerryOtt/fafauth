@@ -11,26 +11,25 @@ provider:
   name: aws
   region: ap-south-1
   runtime: python3.14
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - lambda:InvokeFunction
-          Resource: "*"
+  httpApi:
+    authorizers:
+      customAuthorizer:
+        type: request
+        functionName: apiCustomAuthorizer 
+        enableSimpleResponses: true # Enable simple response format
+        payloadVersion: '2.0' # Use payload version 2.0
+
+ 
 
 functions:
   apiCustomAuthorizer:
       handler: authorizer.custom_authorizer
 
   ping:
-    handler: handler.hello
+    handler: handler.ping
     events:
-      - http:
+      - httpApi:
           path: /api/v001/ping
           method: get
           authorizer:
-            name: apiCustomAuthorizer
-            type: TOKEN
-            identitySource: method.request.header.Authorization # Specifies where to find the token
-            authorizerResultTtlInSeconds: 300 # Caches the policy for 5 minutes
+            name: customAuthorizer

@@ -5,15 +5,13 @@ import logging
 logger = logging.getLogger()
 
 
-
 def custom_authorizer(event, context):
     """
     Handles the authorization logic.
     The event object contains the authorization token and method ARN.
     """
     # Extract the token from the event object, often from 'authorizationToken' header
-    token = event.get('authorizationToken')
-    logger.info(f"Auth token passed: {token}")
+    logger.info(f"Event: {json.dumps(event)}")
 
     """
     if token == os.environ.get('VALID_TOKEN'):
@@ -27,33 +25,7 @@ def custom_authorizer(event, context):
         raise Exception('Unauthorized')
     """
 
-    return generatePolicy('user', 'Allow', event['methodArn'])
-
-
-
-def generatePolicy(principalId, effect, resource):
-    """
-    Generates the IAM policy document for the authorizer.
-    """
-    authResponse = {
-        'principalId': principalId
+    return {
+        'isAuthorized': True
     }
-
-    if effect and resource:
-        policyDocument = {
-            'Version': '2012-10-17',
-            'Statement': [
-                {
-                    'Action': 'execute-api:Invoke',
-                    'Effect': effect,
-                    'Resource': resource
-                }
-            ]
-        }
-        authResponse['policyDocument'] = policyDocument
-        
-    # Optional: You can also return a context map (key-value pairs)
-    # authResponse['context'] = {'key': 'value'}
-    
-    return authResponse
 
