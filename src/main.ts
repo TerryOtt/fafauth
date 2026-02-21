@@ -61,3 +61,8 @@ const addKindeEvent = (id) => {
 // Handle page load
 const user = await kinde.getUser();
 await render(user);
+
+const bearerToken = await kinde.getToken();
+if ( bearerToken !== undefined ) {
+    console.log("Using header:\n    Authorization: Bearer " + bearerToken);
+}
