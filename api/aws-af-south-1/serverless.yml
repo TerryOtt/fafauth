@@ -1,0 +1,33 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: firsttracks
+
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: fafauth-api
+
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: fafauth
+
+provider:
+  name: aws
+  region: af-south-1
+  runtime: python3.14
+  httpApi:
+    authorizers:
+      customAuthorizer:
+        type: request
+        functionName: apiCustomAuthorizer 
+        enableSimpleResponses: true # Enable simple response format
+        payloadVersion: '2.0' # Use payload version 2.0
+
+functions:
+  apiCustomAuthorizer:
+      handler: authorizer.custom_authorizer
+
+  ping:
+    handler: handler.ping
+    events:
+      - httpApi:
+          path: /api/v001/ping
+          method: get
+          authorizer:
+            name: customAuthorizer
