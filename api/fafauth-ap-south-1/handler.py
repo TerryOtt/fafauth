@@ -15,7 +15,10 @@ def ping(event, context):
 
     response = {
         "statusCode"    : 200, 
-        "body"          : json.dumps(body, indent=4, sort_keys=True),
+        "headers": {
+            "Content-Type": "application/json",
+        },
+        "body"          : json.dumps(body, indent=4, sort_keys=True), 
     }
 
     return response
