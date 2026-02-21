@@ -3,6 +3,7 @@ import logging
 
 
 logger = logging.getLogger()
+logger.setLevel('DEBUG')
 
 
 def custom_authorizer(event, context):
