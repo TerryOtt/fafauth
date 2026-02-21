@@ -12,21 +12,23 @@ def custom_authorizer(event, context):
     The event object contains the authorization token and method ARN.
     """
     # Extract the token from the event object, often from 'authorizationToken' header
-    logger.info(f"Event: {json.dumps(event)}")
+    logger.debug(f"Event: {json.dumps(event)}")
+    bearer_token = None
+    if 'headers' in event:
+        if 'authorization' in event['headers']:
+            auth_string = event['headers']['authorization']
+            logger.debug(f"Got Authorization value: \"{auth_string}\"")
+            tokens = auth_string.split(' ')
+            if len(tokens) == 2 and tokens[0] == "Bearer":
+                bearer_token = tokens[1]
+                logger.info(f"Got bearer token \"{bearer_token}\"")
 
-    """
-    if token == os.environ.get('VALID_TOKEN'):
-        # If valid, return an IAM policy allowing access
-        return generatePolicy('user', 'Allow', event['methodArn'])
-    else:
-        # If invalid, raise an error to deny access (API Gateway handles the 401/403 response)
-        # For a TOKEN authorizer, an 'Unauthorized' string response often results in a 401
-        # while an explicit "Deny" policy results in a 403.
-        print("Unauthorized attempt")
-        raise Exception('Unauthorized')
-    """
+    if not bearer_token:
+        is_authorized = True
+    else:   
+        is_authorized = bearer_token == "faffaffaf"
 
     return {
-        'isAuthorized': True
+        'isAuthorized': is_authorized
     }
 

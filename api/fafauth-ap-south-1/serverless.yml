@@ -18,7 +18,6 @@ provider:
         functionName: apiCustomAuthorizer 
         enableSimpleResponses: true # Enable simple response format
         payloadVersion: '2.0' # Use payload version 2.0
-
  
 
 functions:
