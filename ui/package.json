@@ -9,11 +9,12 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.0.2",
-    "vite": "^4.5.3"
+    "@vitejs/plugin-basic-ssl": "^2.1.4",
+    "npm-check-updates": "^19.4.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
   },
   "dependencies": {
-    "@kinde-oss/kinde-auth-pkce-js": "^4.1.1",
-    "@vitejs/plugin-basic-ssl": "^1.2.0"
+    "@kinde-oss/kinde-auth-pkce-js": "^4.3.0"
   }
 }
