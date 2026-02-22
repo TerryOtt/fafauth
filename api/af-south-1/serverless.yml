@@ -19,7 +19,6 @@ provider:
         enableSimpleResponses: true # Enable simple response format
         payloadVersion: '2.0' # Use payload version 2.0, required for simple response format
 
-
 functions:
   apiCustomAuthorizer:
       handler: authorizer.custom_authorizer
@@ -41,3 +40,8 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
+
+# Needed to pick up requirements.txt
+custom:
+  pythonRequirements:
+    dockerizePip: true
