@@ -25,6 +25,7 @@ functions:
 
   apiCustomAuthorizer:
     handler: authorizer.custom_authorizer
+    memorySize: 1769
     iam:
       role: 
         statements:

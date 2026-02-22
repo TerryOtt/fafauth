@@ -107,7 +107,7 @@ def custom_authorizer(event, context):
                 # Parse into format jwk can handle
                 #
                 # Note: jwt.algorithms is not a package, so you just import jwt and you get it
-                signing_rsa_public_key = jwt.algorithms.RSAAlgorithm.from_jwk(jwks_str)
+                signing_rsa_public_key = jwt.algorithms.RSAAlgorithm.from_jwk(curr_signing_jwk)
                 logger.info("Found matching signing key in JWKS and successfully created RSA public key from it")
                 break
 
@@ -121,8 +121,8 @@ def custom_authorizer(event, context):
                 },
             }
 
-    except:
-        logger.error("Exception thrown during setting up signing key")
+    except Exception as e:
+        logger.error(f"Exception thrown during setting up signing key: {e}")
         return {
             'isAuthorized': is_authorized,
             'context': {
