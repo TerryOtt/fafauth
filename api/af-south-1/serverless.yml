@@ -29,12 +29,14 @@ functions:
     iam:
       role: 
         statements:
-          # Permission to get exactly one specific parameter
+          # Permission to get exactly two specific parameters for our function to avoid needing to push code due to an IdP change
           - Effect: 'Allow'
             Action:
               - 'ssm:GetParameter'
+              - 'ssm:GetParameters'
             Resource:
               - 'arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/fafauth/apigw_custom_authorizer/client_token_signing_keys_jwks'
+              - 'arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/fafauth/apigw_custom_authorizer/token_claims_validation_values'
 
   ping:
     handler: handler.ping
