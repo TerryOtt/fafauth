@@ -44,3 +44,4 @@ functions:
 # Needed to pick up requirements.txt
 custom:
   pythonRequirements:
+    dockerizePip: true
