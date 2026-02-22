@@ -20,25 +20,20 @@ provider:
         enableSimpleResponses: true # Enable simple response format
         payloadVersion: '2.0' # Use payload version 2.0, required for simple response format
 
-  # IAM setup to create an IAM role which can read Parameter Store path containing the JWKS which
-  #     hopefully is the one which signed all bearer tokens presented to our API
-  #
-  # See: https://www.serverless.com/framework/docs/providers/aws/guide/iam
-  iam:
-    role:
-      name: fafauth-read-jwks
-      statements:
-        # Permission to get exactly one specific parameter
-        - Effect: 'Allow'
-          Action:
-            - 'ssm:GetParameter'
-          Resource:
-            - 'arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/fafauth/apigw_custom_authorizer/client_token_signing_keys_jwks'
-
 
 functions:
+
   apiCustomAuthorizer:
-      handler: authorizer.custom_authorizer
+    handler: authorizer.custom_authorizer
+    iam:
+      role: 
+        statements:
+          # Permission to get exactly one specific parameter
+          - Effect: 'Allow'
+            Action:
+              - 'ssm:GetParameter'
+            Resource:
+              - 'arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/fafauth/apigw_custom_authorizer/client_token_signing_keys_jwks'
 
   ping:
     handler: handler.ping
