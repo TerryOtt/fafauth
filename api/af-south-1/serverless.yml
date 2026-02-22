@@ -10,7 +10,7 @@ service: fafauth
 provider:
   name: aws
   region: af-south-1
-  runtime: python3.12
+  runtime: python3.14
   httpApi:
     authorizers:
       customAuthorizer:
