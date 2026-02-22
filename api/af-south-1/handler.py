@@ -23,3 +23,19 @@ def ping(event, context):
 
     return response
 
+
+def get_user_info(event, context):
+    body: {
+        "event passed in:\n" + json.dumps(event, indent=4, sort_keys=True)
+    }  
+
+    response = {
+        "statusCode"    : 200,
+        "headers": {
+            "Content-Type": "application/json",
+        },
+        "body"          : json.dumps(body, indent=4, sort_keys=True) + "\n",
+    }
+
+    return response
+
