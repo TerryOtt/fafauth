@@ -174,10 +174,9 @@ def custom_authorizer(event, context):
     try:
         #payload: dict[str, typing.Any] = jwt.decode(bearer_token, options={'verify_signature': False})
         payload: dict[str, typing.Any] = jwt.decode(bearer_token, key=signing_rsa_public_key, algorithms=[signing_key_algo, ],
-                                                    # audience=correct_claim_values['aud'], 
-                                                    audience=None,
-                                                    issuer=correct_claim_values['iss'] 
-        )
+                                                    audience=correct_claim_values['aud'], 
+                                                    issuer=correct_claim_values['iss'] )
+
         logger.info("Passed decoding, signature check, and valid aud/iss claims on bearer token, we're good in the hood")
         logger.info(json.dumps(payload, indent=4, sort_keys=True))
         is_authorized = True
