@@ -5,6 +5,5 @@ description = "Drive the API by a script"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "pyjwt>=2.11.0",
     "requests>=2.32.5",
 ]
