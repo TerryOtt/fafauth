@@ -10,7 +10,7 @@ service: fafauth
 provider:
   name: aws
   region: af-south-1
-  runtime: python3.14
+  runtime: python3.12
   httpApi:
     authorizers:
       customAuthorizer:
@@ -18,7 +18,6 @@ provider:
         functionName: apiCustomAuthorizer 
         enableSimpleResponses: true # Enable simple response format
         payloadVersion: '2.0' # Use payload version 2.0, required for simple response format
-
 
 functions:
   apiCustomAuthorizer:
@@ -41,3 +40,7 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
+
+# Needed to pick up requirements.txt
+custom:
+  pythonRequirements:
