@@ -73,9 +73,65 @@ def custom_authorizer(event, context):
             },
         }
 
-    jwks_value: str = parameter_store_response['Parameter']['Value']
-    logger.info("Got JWKS string")
-    logger.info( json.dumps(json.loads(jwks_value), indent=4, sort_keys=True) )
+    jwks_str: str = parameter_store_response['Parameter']['Value']
+    logger.info("Got JWKS JSON string from Parameter Store")
+    jwks_dict: dict[str, list[dict[str, str]]] = json.loads(jwks_str)
+    logger.info( json.dumps(jwks_dict, indent=4, sort_keys=True) )
+
+    # Get key ID of signing key
+    try:
+        unverified_header = jwt.get_unverified_header(bearer_token)
+        signing_kid: str = unverified_header['kid']
+    except:
+        logger.error("Bearer token had no key id (\"kid\") field")
+        return {
+            'isAuthorized': is_authorized,
+            'context': {
+                'auth_time_ms': int((time.perf_counter() - start_time) * ms_in_s)
+            },
+        }
+
+    signing_rsa_public_key = None
+    # Make sure signing JWKS has matching key 
+    try:
+        for curr_signing_jwk in jwks_dict['keys']:
+            if 'kid' not in curr_signing_jwk:
+                logger.error("Signing key did not have kid field")
+                return {
+                    'isAuthorized': is_authorized,
+                    'context': {
+                        'auth_time_ms': int((time.perf_counter() - start_time) * ms_in_s)
+                    },
+                }
+            if curr_signing_jwk['kid'] == signing_kid:
+                # Parse into format jwk can handle
+                #
+                # Note: jwt.algorithms is not a package, so you just import jwt and you get it
+                signing_rsa_public_key = jwt.algorithms.RSAAlgorithm.from_jwk(jwks_str)
+                logger.info("Found matching signing key in JWKS and successfully created RSA public key from it")
+                break
+
+        # cute Python syntax if a for loop that should end early doesn't hits this case
+        else:
+            logger.warn(f"Bearer token claimed its signing key has key id of \"{signing_kid}\" which isn't in JWKS")
+            return {
+                'isAuthorized': is_authorized,
+                'context': {
+                    'auth_time_ms': int((time.perf_counter() - start_time) * ms_in_s)
+                },
+            }
+
+    except:
+        logger.error("Exception thrown during setting up signing key")
+        return {
+            'isAuthorized': is_authorized,
+            'context': {
+                'auth_time_ms': int((time.perf_counter() - start_time) * ms_in_s)
+            },
+        }
+
+
+    # We are guaranteed to have a valid RSA public key in signing_rsa_public_key be
 
     
     try:
