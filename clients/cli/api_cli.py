@@ -53,18 +53,23 @@ def _validate_bearer_token(bearer_token: str) -> None:
         time_remaining = f"{seconds_remaining // 60:d} minutes"
     logger.debug(f"Bearer token expires in {time_remaining}")
 
-
 def _run_cmd(args: argparse.Namespace) -> None:
     url_to_hit: str = f"{args.api_address}{known_commands[args.operation]['endpoint']}"
     request_headers: dict[str, str] = {
         'Accept': 'application/json',
     }
-    if known_commands[args.operation]['requires_authorization']:
+    if 'requires_authorization' in known_commands[args.operation] and \
+            known_commands[args.operation]['requires_authorization']:
         request_headers['Authorization'] = f"Bearer {args.bearer_token}"
     start_time: float = time.perf_counter()
     response: requests.Response = known_commands[args.operation]['function'](
         url_to_hit, headers=request_headers)
     end_time: float = time.perf_counter()
+
+    if response.status_code == 403:
+        print("\nINFO: Authentication failed, got a 403 back, bailing")
+        return
+
     response.raise_for_status()
     print(f"\nRound trip time: {int((end_time - start_time) * 1000):,} ms")
     print(f"\nResponse:\n{json.dumps(response.json(), indent=4, sort_keys=True)}\n")
