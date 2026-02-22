@@ -1,7 +1,7 @@
 [project]
-name = "cli"
+name = "fafauth-cli"
 version = "0.1.0"
-description = "Add your description here"
+description = "Drive the API by a script"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
