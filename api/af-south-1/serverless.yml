@@ -5,7 +5,7 @@ org: firsttracks
 app: fafauth-api
 
 # "service" is the name of this project. This will also be added to your AWS resource names.
-oservice: fafauth
+service: fafauth
 
 provider:
   name: aws
@@ -16,8 +16,9 @@ provider:
       customAuthorizer:
         type: request
         functionName: apiCustomAuthorizer 
-        enableSimpleResponses: true 
-        payloadVersion: '2.0' 
+        enableSimpleResponses: true # Enable simple response format
+        payloadVersion: '2.0' # Use payload version 2.0, required for simple response format
+
 
 functions:
   apiCustomAuthorizer:
@@ -25,7 +26,18 @@ functions:
 
   ping:
     handler: handler.ping
+    memorySize: 1769
     events:
       - httpApi:
           path: /api/v001/ping
           method: get
+
+  getUserInfo:
+    handler: handler.get_user_info
+    memorySize: 1769
+    events:
+      - httpApi:
+          path: /api/v001/user
+          method: get
+          authorizer:
+            name: customAuthorizer

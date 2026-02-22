@@ -23,11 +23,10 @@ def ping(event, context):
 
     return response
 
-
 def get_user_info(event, context):
-    body: {
-        "event passed in:\n" + json.dumps(event, indent=4, sort_keys=True)
-    }  
+    body = {
+        "event": event,
+    }
 
     response = {
         "statusCode"    : 200,
