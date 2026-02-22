@@ -1,13 +1,20 @@
 import json
 import jwt
 import logging
+import time
 
 
 logger = logging.getLogger()
 logger.setLevel('DEBUG')
 
+ms_in_s: int = 1000
+
+client_token_signing_jwks_param_store_path: str = "/fafauth/apigw_custom_authorizer/client_token_signing_keys_jwks"
+
 
 def custom_authorizer(event, context):
+    start_time: float = time.perf_counter()
+    
 
     is_authorized: bool = False
 
@@ -21,6 +28,9 @@ def custom_authorizer(event, context):
     if 'headers' not in event or 'authorization' not in event['headers']:
         return {
             'isAuthorized': is_authorized,
+            'context': {
+                'auth_time_ms': int((time.perf_counter() - start_time) * ms_in_s)
+            },
         }
     auth_string = event['headers']['authorization']
     logger.debug(f"Got Authorization value: \"{auth_string}\"")
@@ -28,6 +38,9 @@ def custom_authorizer(event, context):
     if not len(tokens) == 2 or not tokens[0] == "Bearer":
         return {
             'isAuthorized': is_authorized,
+            'context': {
+                'auth_time_ms': int((time.perf_counter() - start_time) * ms_in_s)
+            },
         }
 
     bearer_token = tokens[1]
@@ -41,6 +54,9 @@ def custom_authorizer(event, context):
         pass
 
     return {
-        'isAuthorized': is_authorized
+        'isAuthorized': is_authorized,
+        'context': {
+            'auth_time_ms': int((time.perf_counter() - start_time) * ms_in_s)
+        },
     }
 
